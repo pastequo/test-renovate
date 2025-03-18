@@ -1,8 +1,21 @@
 {
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
     "schedule": ["on Saturday"],
     "groupName": "Konflux build pipeline",
     "includePaths": [".tekton/*"],
     "commitMessagePrefix": "NO-ISSUE: ",
-    "labels": ["lgtm", "approved", "konflux"]
-}
+    "labels": ["lgtm", "approved", "konflux"],
 
+    "customManagers": [
+        {
+            "customType": "regex",
+            "fileMatch": ["^Dockerfile.lint$"],
+            "matchStrings": [
+                "RUN curl .*https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- .* (?<currentValue>.*?)\\n"
+            ],
+            "depNameTemplate": "github.com/golangci/golangci-lint",
+            "datasourceTemplate": "go"
+        }
+    ]
+}

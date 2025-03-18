@@ -6,7 +6,10 @@
     ],
 
     "commitMessagePrefix": "NO-ISSUE: ",
-    "labels": ["lgtm", "approved", "konflux"],
+    "labels": ["lgtm", "approved"],
+
+    "prHourlyLimit": 0,
+    "prConcurrentLimit": 0,
 
     "customManagers": [
         {
@@ -33,7 +36,7 @@
         {
             "groupName": "Go Builder",
             "matchDatasources": ["docker"],
-            "matchPackageNames": ["registry.access.redhat.com/ubi*"],
+            "matchPackageNames": ["registry.access.redhat.com/ubi9/go-toolset"],
             "matchUpdateTypes": ["minor"]
         },
         {

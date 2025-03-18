@@ -1,6 +1,10 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
 
+    "enabledManagers": [
+        "regex"
+    ],
+
     "groupName": "Konflux build pipeline",
     "commitMessagePrefix": "NO-ISSUE: ",
     "labels": ["lgtm", "approved", "konflux"],
@@ -22,6 +26,14 @@
                 "FROM (?<depName>.*?):rhel_\\${RHEL_VERSION}_golang_(?<currentValue>.*?) AS golang\\n"
             ],
             "datasourceTemplate": "docker"
+        }
+    ],
+
+    "packageRules": [
+        {
+            "matchDatasources": ["docker"],
+            "matchPackageNames": ["brew.registry.redhat.io/rh-osbs/openshift-golang-builder"],
+            "versioning": "regex:^rhel9_9_golang_(?<major>\\d+)\\.(?<minor>\\d+)$"
         }
     ]
 }

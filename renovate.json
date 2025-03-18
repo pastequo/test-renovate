@@ -33,7 +33,7 @@
         {
             "matchDatasources": ["docker"],
             "matchPackageNames": ["brew.registry.redhat.io/rh-osbs/openshift-golang-builder"],
-            "versioning": "regex:^rhel_9_golang_(?<major>\\d+)\\.(?<minor>\\d+)$"
+            "versioning": "regex:^rhel_9_golang_(?<major>\\d+)\\.(?<minor>\\d+)$|^(?<major>\\d+)\\.(?<minor>\\d+)$"
         }
     ]
 }

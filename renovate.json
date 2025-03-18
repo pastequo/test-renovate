@@ -14,6 +14,15 @@
             ],
             "depNameTemplate": "github.com/golangci/golangci-lint",
             "datasourceTemplate": "go"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^Dockerfile$"],
+            "matchStrings": [
+                "FROM (?<depName>.*?):rhel_${RHEL_VERSION}_golang_(?<currentValue>.*?) AS golang\\n"
+            ],
+            "datasourceTemplate": "docker",
+            "versioningTemplate": "semver"
         }
     ]
 }

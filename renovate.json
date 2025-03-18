@@ -5,8 +5,6 @@
         "regex"
     ],
 
-    "ignorePresets": ["group:all"],
-
     "commitMessagePrefix": "NO-ISSUE: ",
     "labels": ["lgtm", "approved"],
 
@@ -45,6 +43,12 @@
             "groupName": "Linter",
             "matchDatasources": ["go"],
             "matchPackageNames": ["github.com/golangci/golangci-lint"]
+        },
+        {
+            "matchUpdateTypes": ["major"],
+            "matchDatasources": ["docker"],
+            "matchPackageNames": ["registry.access.redhat.com/ubi9/go-toolset"],
+            "enabled": false
         }
     ]
 }

@@ -1,7 +1,6 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
 
-    "schedule": ["on Saturday"],
     "groupName": "Konflux build pipeline",
     "commitMessagePrefix": "NO-ISSUE: ",
     "labels": ["lgtm", "approved", "konflux"],

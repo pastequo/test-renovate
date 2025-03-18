@@ -19,10 +19,9 @@
             "customType": "regex",
             "fileMatch": ["^Dockerfile$"],
             "matchStrings": [
-                "FROM (?<depName>.*?):rhel_${RHEL_VERSION}_golang_(?<currentValue>.*?) AS golang\\n"
+                "FROM (?<depName>.*?):rhel_\${RHEL_VERSION}_golang_(?<currentValue>.*?) AS golang\\n"
             ],
-            "datasourceTemplate": "docker",
-            "versioningTemplate": "semver"
+            "datasourceTemplate": "docker"
         }
     ]
 }

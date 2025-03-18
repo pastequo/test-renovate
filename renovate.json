@@ -11,7 +11,6 @@
 
     "customManagers": [
         {
-            "groupName": "Linter",
             "customType": "regex",
             "fileMatch": ["^Dockerfile.lint$"],
             "matchStrings": [
@@ -21,7 +20,6 @@
             "datasourceTemplate": "go"
         },
         {
-            "groupName": "Go Builder",
             "customType": "regex",
             "fileMatch": ["^Dockerfile2$"],
             "matchStrings": [
@@ -29,6 +27,14 @@
             ],
             "depNameTemplate": "registry.access.redhat.com/ubi9/go-toolset",
             "datasourceTemplate": "docker"
+        }
+    ],
+
+    "packageRules": [
+        {
+            "matchDatasources": ["docker"],
+            "matchPackageNames": ["registry.access.redhat.com/ubi9/go-toolset"],
+            "matchUpdateTypes": ["minor"]
         }
     ]
 }

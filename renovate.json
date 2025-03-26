@@ -8,7 +8,7 @@
     "prConcurrentLimit": 0,
 
     "enabledManagers": [
-        "docker",
+        "dockerfile",
         "regex",
         "tekton"
     ],
@@ -17,7 +17,7 @@
         "fileMatch": ["^.tekton/*"]
     },
 
-    "docker": {
+    "dockerfile": {
         "fileMatch": ["^Dockerfile2$", "^Dockerfile3$"]
     },
 

@@ -1,6 +1,11 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
 
+    "enabledManagers": [
+        "tekton",
+        "regex"
+    ],
+
     "commitMessagePrefix": "NO-ISSUE: ",
     "labels": ["lgtm", "approved"],
 
@@ -55,7 +60,7 @@
         {
             "groupName": "Konflux build pipeline",
             "includePaths": [".tekton/*"],
-            "matchPackageNames": ["quay.io/konflux-ci/tekton-catalog/**"]
+            "matchManagers": ["tekton"]
         }
     ]
 }

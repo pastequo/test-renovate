@@ -51,9 +51,15 @@
             "enabled": false
         },
         {
+            "matchUpdateTypes": ["major"],
+            "matchDatasources": ["go"],
+            "matchPackageNames": ["github.com/golangci/golangci-lint"],
+            "enabled": false
+        },
+        {
             "groupName": "Konflux build pipeline",
             "includePaths": [".tekton/*"],
-            "matchDatasources": ["docker"]
+            "matchPackageNames": ["quay.io/konflux-ci/tekton-catalog/**"]
         }
     ]
 }

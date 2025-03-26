@@ -49,6 +49,12 @@
             "matchDatasources": ["docker"],
             "matchPackageNames": ["registry.access.redhat.com/ubi9/go-toolset"],
             "enabled": false
+        },
+        {
+            "groupName": "Konflux build pipeline",
+            //"schedule": ["on Saturday"],
+            "includePaths": [".tekton/*"],
+            "matchDatasources": ["docker"]
         }
     ]
 }

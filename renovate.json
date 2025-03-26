@@ -7,6 +7,11 @@
     "prHourlyLimit": 0,
     "prConcurrentLimit": 0,
 
+    
+    "tekton": {
+        "fileMatch": ["^.tekton/*"]
+    },
+
     "customManagers": [
         {
             "customType": "regex",

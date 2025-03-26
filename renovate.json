@@ -54,7 +54,6 @@
         },
         {
             "groupName": "Konflux build pipeline",
-            "includePaths": [".tekton/*"],
             "matchManagers": ["tekton"]
         }
     ]

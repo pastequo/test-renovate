@@ -24,7 +24,7 @@
     "customManagers": [
         {
             "customType": "regex",
-            "fileMatch": ["^Dockerfile.lint$"],
+            "fileMatch": ["^Dockerfile.lint$", "^Dockerfile.build$"],
             "matchStrings": [
                 "RUN curl .*https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- .* (?<currentValue>.*?)\\n"
             ],

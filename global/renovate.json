@@ -1,0 +1,236 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":gitSignOff",
+    ":disableDependencyDashboard"
+  ],
+  "ignorePresets": [
+    ":dependencyDashboard"
+  ],
+  "onboarding": false,
+  "requireConfig": "optional",
+  "inheritConfig": true,
+  "platformCommit": "enabled",
+  "autodiscover": false,
+  "pruneStaleBranches": false,
+  "branchConcurrentLimit": 0,
+  "containerVulnerabilityAlerts": true,
+  "rpmVulnerabilityAlerts": true,
+  "customEnvVariables": {
+    "GOTOOLCHAIN": "auto"
+  },
+  "vulnerabilityAlerts": {
+    "enabled": true
+  },
+  "additionalBranchPrefix": "{{baseBranch}}/",
+  "branchPrefix": "konflux/mintmaker/",
+  "enabledManagers": [
+    "tekton",
+    "dockerfile",
+    "rpm",
+    "custom.regex",
+    "argocd",
+    "crossplane",
+    "fleet",
+    "flux",
+    "helm-requirements",
+    "helm-values",
+    "helmfile",
+    "helmsman",
+    "helmv3",
+    "jsonnet-bundler",
+    "kubernetes",
+    "kustomize",
+    "asdf",
+    "fvm",
+    "git-submodules",
+    "hermit",
+    "homebrew",
+    "osgi",
+    "pre-commit",
+    "vendir",
+    "terraform",
+    "terraform-version",
+    "terragrunt",
+    "terragrunt-version",
+    "tflint-plugin",
+    "pep621",
+    "pep723",
+    "pip-compile",
+    "pip_requirements",
+    "pip_setup",
+    "pipenv",
+    "poetry",
+    "pyenv",
+    "runtime-version",
+    "setup-cfg",
+    "gomod",
+    "ocb",
+    "gitlabci",
+    "gitlabci-include"
+  ],
+  "tekton": {
+    "additionalBranchPrefix": "",
+    "fileMatch": [
+      "\\.yaml$",
+      "\\.yml$"
+    ],
+    "includePaths": [
+      ".tekton/**"
+    ],
+    "packageRules": [
+      {
+        "matchPackageNames": [
+          "/^quay.io/redhat-appstudio-tekton-catalog//",
+          "/^quay.io/konflux-ci/tekton-catalog//"
+        ],
+        "enabled": true,
+        "groupName": "Konflux references",
+        "branchPrefix": "konflux/references/",
+        "group": {
+          "branchTopic": "{{{baseBranch}}}",
+          "commitMessageTopic": "{{{groupName}}}"
+        },
+        "commitMessageTopic": "Konflux references",
+        "prBodyColumns": [
+          "Package",
+          "Change",
+          "Notes"
+        ],
+        "prBodyDefinitions": {
+          "Notes": "{{#if (or (containsString updateType 'minor') (containsString updateType 'major'))}}:warning:[migration](https://github.com/redhat-appstudio/build-definitions/blob/main/task/{{{replace '^quay.io/(redhat-appstudio-tekton-catalog|konflux-ci/tekton-catalog)/task-' '' packageName}}}/{{{newVersion}}}/MIGRATION.md):warning:{{/if}}"
+        },
+        "prBodyTemplate": "{{{header}}}{{{table}}}{{{notes}}}{{{changelogs}}}{{{configDescription}}}{{{controls}}}{{{footer}}}",
+        "recreateWhen": "always",
+        "rebaseWhen": "behind-base-branch"
+      }
+    ],
+    "postUpgradeTasks": {
+      "commands": [
+        "pipeline-migration-tool -u '[{{#each upgrades}}{\"depName\": \"{{{depName}}}\", \"currentValue\": \"{{{currentValue}}}\", \"currentDigest\": \"{{{currentDigest}}}\", \"newValue\": \"{{{newValue}}}\", \"newDigest\": \"{{{newDigest}}}\", \"packageFile\": \"{{{packageFile}}}\", \"parentDir\": \"{{{parentDir}}}\", \"depTypes\": [{{#each depTypes}}\"{{{this}}}\"{{#unless @last}},{{\/unless}}{{\/each}}]}{{#unless @last}},{{\/unless}}{{\/each}}]'"
+      ],
+      "executionMode": "branch"
+    }
+  },
+  "dockerfile": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "registry.access.redhat.com/rhel",
+        "registry.access.redhat.com/rhel-atomic",
+        "registry.access.redhat.com/rhel-init",
+        "registry.access.redhat.com/rhel-minimal",
+        "registry.access.redhat.com/rhceph/**",
+        "registry.access.redhat.com/rhgs3/**",
+        "registry.access.redhat.com/rhel7**",
+        "registry.access.redhat.com/rhel8/**",
+        "registry.access.redhat.com/rhel9/**",
+        "registry.access.redhat.com/rhscl/**",
+        "registry.access.redhat.com/ubi*{,/}**",
+        "redhat/**",
+        "registry.redhat.io/*",
+        "registry.stage.redhat.io/*"
+      ],
+      "versioning": "redhat"
+    }
+  ],
+  "rpm": {
+    "enabled": true,
+    "packageRules": [
+      {
+        "groupName": "RPM updates",
+        "commitMessageAction": "",
+        "commitMessageTopic": "RPM updates",
+        "commitMessageExtra": "",
+        "matchManagers": [
+          "rpm"
+        ],
+        "recreateWhen": "always",
+        "rebaseWhen": "behind-base-branch"
+      }
+    ],
+    "vulnerabilityAlerts": {
+      "branchTopic": "rpm-updates"
+    },
+    "lockFileMaintenance": {
+      "enabled": false
+    }
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "recreateWhen": "always",
+    "rebaseWhen": "behind-base-branch",
+    "branchTopic": "lock-file-maintenance"
+  },
+  "git-submodules": {
+    "enabled": true
+  },
+  "argocd": {},
+  "crossplane": {},
+  "fleet": {},
+  "flux": {},
+  "helm-requirements": {},
+  "helm-values": {},
+  "helmfile": {},
+  "helmsman": {},
+  "helmv3": {},
+  "jsonnet-bundler": {},
+  "kubernetes": {},
+  "kustomize": {},
+  "gitlabci": {},
+  "gitlabci-include": {},
+  "asdf": {},
+  "fvm": {},
+  "hermit": {},
+  "homebrew": {},
+  "osgi": {},
+  "pre-commit": {
+    "enabled": true
+  },
+  "vendir": {},
+  "terraform": {},
+  "terraform-version": {},
+  "terragrunt": {},
+  "terragrunt-version": {},
+  "tflint-plugin": {},
+  "pep621": {},
+  "pep723": {},
+  "pip-compile": {},
+  "pip_requirements": {},
+  "pip_setup": {},
+  "pipenv": {},
+  "poetry": {},
+  "pyenv": {},
+  "runtime-version": {},
+  "setup-cfg": {},
+  "gomod": {
+    "postUpdateOptions": [
+      "gomodUpdateImportPaths",
+      "gomodTidy"
+    ],
+    "packageRules": [
+      {
+        "matchManagers": [
+          "gomod"
+        ],
+        "matchDepTypes": [
+          "indirect"
+        ],
+        "enabled": true
+      }
+    ]
+  },
+  "ocb": {},
+  "forkProcessing": "enabled",
+  "allowedCommands": [
+    "^rpm-lockfile-prototype rpms.in.yaml$",
+    "^pipeline-migration-tool -u '\\[\\{\\{#each upgrades\\}\\}\\{\"depName\": \"\\{\\{\\{depName\\}\\}\\}\", \"currentValue\": \"\\{\\{\\{currentValue\\}\\}\\}\", \"currentDigest\": \"\\{\\{\\{currentDigest\\}\\}\\}\", \"newValue\": \"\\{\\{\\{newValue\\}\\}\\}\", \"newDigest\": \"\\{\\{\\{newDigest\\}\\}\\}\", \"packageFile\": \"\\{\\{\\{packageFile\\}\\}\\}\", \"parentDir\": \"\\{\\{\\{parentDir\\}\\}\\}\", \"depTypes\": \\[\\{\\{#each depTypes\\}\\}\"\\{\\{\\{this\\}\\}\\}\"\\{\\{#unless @last\\}\\},\\{\\{\\/unless\\}\\}\\{\\{\\/each\\}\\}\\]\\}\\{\\{#unless @last\\}\\},\\{\\{\\/unless\\}\\}\\{\\{\\/each\\}\\}\\]'$"
+  ],
+  "updateNotScheduled": false,
+  "dependencyDashboard": false,
+  "stopUpdatingLabel": "konflux-nudge"
+}
+

@@ -1,6 +1,7 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
 
+
     "commitMessagePrefix": "NO-ISSUE: ",
     "labels": ["lgtm", "approved"],
 
@@ -12,19 +13,28 @@
         "regex",
         "tekton"
     ],
-    
+
     "tekton": {
         "fileMatch": ["^.tekton/*"]
     },
 
     "dockerfile": {
-        "fileMatch": ["^Dockerfile2$", "^Dockerfile3$"]
+        "fileMatch": [
+            "^ci-images/Dockerfile.base$",
+            "^Dockerfile.assisted-service-build$",
+            "^Dockerfile.assisted-service-debug$",
+            "^Dockerfile.assisted-service-rhel8-mce$",
+            "^Dockerfile.assisted-service-rhel9-mce$"
+        ]
     },
 
     "customManagers": [
         {
             "customType": "regex",
-            "fileMatch": ["^Dockerfile.lint$", "^Dockerfile.build$"],
+            "fileMatch": [
+                "^ci-images/Dockerfile.lint$",
+                "^Dockerfile.assisted-service-build$"
+            ],
             "matchStrings": [
                 "RUN curl .*https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- .* (?<currentValue>.*?)\\n"
             ],
@@ -33,7 +43,7 @@
         },
         {
             "customType": "regex",
-            "fileMatch": ["^Dockerfile2$"],
+            "fileMatch": ["^Dockerfile.assisted-service$"],
             "matchStrings": [
                 "FROM registry.access.redhat.com/ubi\\${RHEL_VERSION}/go-toolset:(?<currentValue>.*?) AS golang\\n"
             ],
@@ -45,20 +55,22 @@
     "packageRules": [
         {
             "groupName": "Go Builder",
+            "addLabels": ["golang"],
             "matchDatasources": ["docker"],
             "matchPackageNames": ["registry.access.redhat.com/ubi9/go-toolset"],
             "matchUpdateTypes": ["minor"]
-        },
-        {
-            "groupName": "Linter",
-            "matchDatasources": ["go"],
-            "matchPackageNames": ["github.com/golangci/golangci-lint"]
         },
         {
             "matchUpdateTypes": ["major"],
             "matchDatasources": ["docker"],
             "matchPackageNames": ["registry.access.redhat.com/ubi9/go-toolset"],
             "enabled": false
+        },
+        {
+            "groupName": "Linter",
+            "addLabels": ["linter"],
+            "matchDatasources": ["go"],
+            "matchPackageNames": ["github.com/golangci/golangci-lint"]
         },
         {
             "matchUpdateTypes": ["major"],
@@ -68,6 +80,8 @@
         },
         {
             "groupName": "Konflux build pipeline",
+            "addLabels": ["konflux"],
+            "schedule": ["on Saturday"],
             "matchManagers": ["tekton"]
         }
     ]

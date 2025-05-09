@@ -1,0 +1,106 @@
+ARG RHEL_VERSION=9
+
+FROM registry.access.redhat.com/ubi$RHEL_VERSION/go-toolset:1.21 AS golang
+
+ADD . /app
+WORKDIR /app
+
+# Licenses
+RUN go install github.com/google/go-licenses@v1.6.0
+RUN ${HOME}/go/bin/go-licenses save --save_path /tmp/licenses ./...
+
+# Build binaries
+FROM quay.io/centos/centos:stream$RHEL_VERSION as builder
+
+COPY hack/container_build_scripts/install_build_deps.sh .
+COPY hack/container_build_scripts/utils.sh .
+ARG RHEL_VERSION
+RUN ./install_build_deps.sh $RHEL_VERSION
+
+ENV GOROOT=/usr/lib/golang
+ENV GOPATH=/opt/app-root/src/go
+ENV PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+
+COPY --from=golang $GOPATH $GOPATH
+COPY --from=golang $GOROOT $GOROOT
+
+RUN chmod 775 -R $GOPATH && chmod 775 -R $GOROOT
+
+WORKDIR /assisted-service/
+
+# Bring in the go dependencies before anything else so we can take
+# advantage of caching these layers in future builds.
+COPY api/go.mod api/go.sum /assisted-service/api/
+COPY client/go.mod client/go.sum /assisted-service/client/
+COPY models/go.mod models/go.sum /assisted-service/models/
+COPY go.mod go.sum /assisted-service/
+RUN go mod download
+
+COPY . /assisted-service/
+
+RUN cd cmd && CGO_ENABLED=1 GOFLAGS="" GO111MODULE=on go build -o /build/assisted-service
+RUN cd ./cmd/operator && CGO_ENABLED=1 GOFLAGS="" GO111MODULE=on go build -o /build/assisted-service-operator
+RUN cd ./cmd/webadmission && CGO_ENABLED=1 GOFLAGS="" GO111MODULE=on go build -o /build/assisted-service-admission
+RUN cd ./cmd/agentbasedinstaller/client && CGO_ENABLED=1 GOFLAGS="" GO111MODULE=on go build -o /build/agent-installer-client
+
+# Extract the commit reference from which the image is built
+RUN git rev-parse --short HEAD > /commit-reference.txt
+
+# Create final image
+FROM quay.io/centos/centos:stream$RHEL_VERSION
+
+ARG release=main
+ARG version=latest
+
+LABEL com.redhat.component assisted-service
+LABEL description "Service that installs Openshift"
+LABEL summary "Service that installs Openshift"
+LABEL io.k8s.description "Service that installs Openshift"
+LABEL distribution-scope public
+LABEL name assisted-service
+LABEL release ${release}
+LABEL version ${version}
+LABEL url https://github.com/openshift/assisted-service
+LABEL vendor "Red Hat, Inc."
+LABEL maintainer "Red Hat"
+
+COPY --from=golang /tmp/licenses /licenses
+
+COPY hack/container_build_scripts/replace_dnf_repositories_ref_if_needed.sh .
+COPY hack/container_build_scripts/utils.sh .
+ARG RHEL_VERSION
+RUN ./replace_dnf_repositories_ref_if_needed.sh $RHEL_VERSION
+
+# multiarch images need it till WRKLDS-222 and https://bugzilla.redhat.com/show_bug.cgi?id=2111537 are fixed
+RUN dnf install -y --setopt=install_weak_deps=False skopeo
+# openshift-install requires this
+RUN dnf install -y libvirt-libs nmstate nmstate-libs &&\
+    dnf clean all
+
+RUN dnf update libksba libxml2 -y && dnf clean all
+
+# Ensure UID can write in data dir (e.g.: when using podman, docker, ...)
+# Ensure root group can write in data dir when deployed on OCP
+# https://docs.openshift.com/container-platform/4.16/openshift_images/create-images.html#use-uid_create-images
+ARG WORK_DIR=/data
+ARG UID=1001
+ARG GID=0
+RUN mkdir $WORK_DIR && chmod 775 $WORK_DIR && chown $UID:$GID $WORK_DIR
+
+# downstream this can be installed as an RPM
+COPY --from=quay.io/openshift/origin-cli:4.12 /usr/bin/oc /usr/local/bin/
+
+COPY --from=builder /build/assisted-service /assisted-service
+COPY --from=builder /build/assisted-service-operator /assisted-service-operator
+COPY --from=builder /build/assisted-service-admission /assisted-service-admission
+COPY --from=builder /build/agent-installer-client /usr/local/bin/agent-installer-client
+RUN ln -s /usr/local/bin/agent-installer-client /agent-based-installer-register-cluster-and-infraenv
+ENV GODEBUG=madvdontneed=1
+ENV GOGC=50
+
+# Extract the commit reference from which the image is built
+COPY --from=builder /commit-reference.txt /commit-reference.txt
+
+USER $UID:$GID
+
+CMD ["/assisted-service"]

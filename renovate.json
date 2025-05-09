@@ -81,7 +81,6 @@
         {
             "groupName": "Konflux build pipeline",
             "addLabels": ["konflux"],
-            "schedule": ["on Saturday"],
             "matchManagers": ["tekton"]
         }
     ]

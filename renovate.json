@@ -10,8 +10,7 @@
     "prConcurrentLimit": 0,
     "enabledManagers": [
         "custom.regex",
-        "tekton",
-        "rpm-lockfile"
+        "tekton"
     ],
     "tekton": {
         "managerFilePatterns": [

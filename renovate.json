@@ -20,6 +20,17 @@
     "customManagers": [
         {
             "customType": "regex",
+            "managerFilePatterns": [
+                "/^Dockerfile.image-service-build$/"
+            ],
+            "matchStrings": [
+                "ARG GOLANGCI_LINT_VERSION=(?<currentValue>[^\\s]+)\\n"
+            ],
+            "depNameTemplate": "github.com/golangci/golangci-lint",
+            "datasourceTemplate": "go"
+        },
+        {
+            "customType": "regex",
             "fileMatch": [
                 "^ci-images/Dockerfile.lint$",
                 "^Dockerfile.assisted-service-build$"
@@ -96,6 +107,7 @@
         {
             "groupName": "Konflux build pipeline",
             "addLabels": ["konflux"],
+            "schedule": ["on Saturday"],
             "matchManagers": ["tekton"]
         }
     ]

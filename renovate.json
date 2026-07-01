@@ -1,20 +1,22 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
 
-
     "commitMessagePrefix": "NO-ISSUE: ",
-    "labels": ["lgtm", "approved"],
-
+    "labels": [
+        "lgtm",
+        "approved"
+    ],
     "prHourlyLimit": 0,
     "prConcurrentLimit": 0,
-
     "enabledManagers": [
         "custom.regex",
-        "tekton"
+        "tekton",
+        "rpm-lockfile"
     ],
-
     "tekton": {
-        "fileMatch": ["^.tekton/*"]
+        "managerFilePatterns": [
+            "/^.tekton/*/"
+        ]
     },
 
     "customManagers": [

@@ -23,7 +23,7 @@
         {
             "customType": "regex",
             "managerFilePatterns": [
-                "/^Dockerfile.image-service-build$/"
+                "/^Dockerfile.assisted-service-build$/"
             ],
             "matchStrings": [
                 "ARG GOLANGCI_LINT_VERSION=(?<currentValue>[^\\s]+)\\n"

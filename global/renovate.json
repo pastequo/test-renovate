@@ -14,11 +14,9 @@
   "platformCommit": "enabled",
   "autodiscover": false,
   "pruneStaleBranches": true,
-  "parallelRunPruneStaleBranches": true,
   "branchConcurrentLimit": 0,
   "prConcurrentLimit": 20,
   "configMigration": true,
-  "rpmVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "enabled": true
   },
@@ -30,7 +28,6 @@
     "github-actions",
     "tekton",
     "dockerfile",
-    "rpm-lockfile",
     "custom.regex",
     "argocd",
     "crossplane",
@@ -580,12 +577,6 @@
       }
     ]
   },
-  "rpm-lockfile": {
-    "lockFileMaintenance": {
-      "enabled": true,
-      "schedule": ["* 0-4 * * *"]
-    }
-  },
   "lockFileMaintenance": {
     "enabled": true,
     "recreateWhen": "always",
@@ -620,9 +611,7 @@
   },
   "forkProcessing": "enabled",
   "allowedCommands": [
-    "^rpm-lockfile-prototype rpms.in.yaml$",
-    "^pipeline-migration-tool migrate -f \"\\$RENOVATE_POST_UPGRADE_COMMAND_DATA_FILE\"$",
-    "^refresh-rpm-lockfiles -f \"\\$RENOVATE_POST_UPGRADE_COMMAND_DATA_FILE\"$"
+    "^pipeline-migration-tool migrate -f \"\\$RENOVATE_POST_UPGRADE_COMMAND_DATA_FILE\"$"
   ],
   "updateNotScheduled": false,
   "dependencyDashboard": false,
